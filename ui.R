@@ -1,20 +1,14 @@
 library(shiny)
 shinyUI(pageWithSidebar(
-  headerPanel('NYC Yellow Taxi Trips in January 2015'),
+  headerPanel('Impact of Apple Ad Expenses on iMac Sales'),
   sidebarPanel(
-    selectInput('day', 'Choose the day', choices = c('Sunday' = 1, 'Monday' = 2, 'Tuesday' = 3, 'Wednesday' = 4, 'Thursday' = 5, 'Friday' = 6, 'Saturday' = 7)),
-    sliderInput('startHour', 'Choose the starting hour', min = 0, max = 23, value = 3),
-    sliderInput('endHour', 'Choose the ending hour', min = 0, max = 23, value = 7)
-  ),
+  sliderInput('startQuarter', 'Choose the starting Quarter (1: Q1-06, 40: Q4-15)', min = 1, max = 40, value = 1),
+    sliderInput('endQuarter', 'Choose the ending Quarter (1: Q1-06, 40: Q4-15)', min = 1, max = 40, value = 40),
+    radioButtons('modelType', "Choose Individual-level Model", choices = c('Weibull' = 2, 'Exponential' = 1)),
+    checkboxInput('mixture', "Add Gamma Distribution (Mixture Model)"),
+    checkboxGroupInput('covariates', "More Covariates", choices = c('New iMac Releases' = 'ni', 'Steve Jobs Death' = 'jd'), selected = c('ni','jd'))
+    ),
   mainPanel(
-    p('This shiny app will show you the number of yellow taxi trips that occurred on a particular day between the selected hours.'),
-    h4('The day you chose:'),
-    verbatimTextOutput('day'),
-    h4('The starting hour you chose:'),
-    verbatimTextOutput('startHour'),
-    h4('The ending hour you chose:'),
-    verbatimTextOutput('endHour'),
-    h4('The number of yellow taxi trips in the selected time period'),
     plotOutput('taxiPlot')
   )
 ))

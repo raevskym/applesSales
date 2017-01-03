@@ -3,6 +3,9 @@ library(dplyr)
 library(lubridate)
 library(BH)
 
+
+#ALTERNATE MIXTURES NOT RESOLVED (i.e. WG and 1Cov/2Cov)
+
 #data input and clear
 iData <- read.csv("iData.csv")
 imatr <- iData
@@ -32,6 +35,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           imatr$Pt<-1-exp(-x1*imatr$A)
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
+          imatr$LL=imatr$sales*log(imatr$dP)
+          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
           
           plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
           plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -41,7 +46,11 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"), lty = c(1,1,1), lwd = c(2,2,2), col = c("blue","purple","black"))
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
+                                           paste("lambda: ",toString(round(x1,digits=4)),sep=""),
+                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
+                                           paste("LL: ",toString(round(-LL)),sep="")),
+                                           lty = c(1,1,1,0,0,0), lwd = c(2,2,2,0,0,0), col = c("blue","purple","black","white","white","white"), cex=0.9)
         }
   
         if (modelType == 1 && mixture) {
@@ -68,6 +77,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           imatr$Pt<-1-((x2/(x2+imatr$A)))^x1
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
+          imatr$LL=imatr$sales*log(imatr$dP)
+          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
           
           plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
           plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -77,7 +88,13 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"), lty = c(1,1,1), lwd = c(2,2,2), col = c("blue","purple","black"))
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
+                                           paste("r: ",toString(round(x1,digits=4)),sep=""),
+                                           paste("alpha: ",toString(round(x2,digits=4)),sep=""),
+                                           paste("b_ads: ",toString(round(x3,digits=4)),sep=""),
+                                           paste("LL: ",toString(round(-LL)),sep="")),
+                  lty = c(1,1,1,0,0,0,0), lwd = c(2,2,2,0,0,0,0),
+                  col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
         }
               
   #Exponential, iMac Covar
@@ -104,6 +121,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                 imatr$Pt<-1-exp(-x1*imatr$A)
                 imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
                 imatr$dP[1]=imatr$Pt[1]
+                imatr$LL=imatr$sales*log(imatr$dP)
+                LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
                 
                 plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
                 plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -113,7 +132,13 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                 
                 lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
                 lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2)
-                legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"), lty = c(1,1,1), lwd = c(2,2,2), col = c("blue","purple","black"))
+                legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
+                                                 paste("lambda: ",toString(round(x1,digits=4)),sep=""),
+                                                 paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
+                                                 paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
+                                                 paste("LL: ",toString(round(-LL)),sep="")),
+                        lty = c(1,1,1,0,0,0,0), lwd = c(2,2,2,0,0,0,0),
+                        col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
               }
       
   #Exponential, Steve Covar
@@ -146,6 +171,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     imatr$Pt<-1-exp(-x1*imatr$A)
     imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
     imatr$dP[1]=imatr$Pt[1]
+    imatr$LL=imatr$sales*log(imatr$dP)
+    LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
     
     plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
     plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -155,10 +182,17 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     
     lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
     lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"), lty = c(1,1,1), lwd = c(2,2,2), col = c("blue","purple","black"))
+    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
+                                     paste("lambda: ",toString(round(x1,digits=4)),sep=""),
+                                     paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
+                                     paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
+                                     paste("gamma: ",toString(round(x6,digits=4)),sep=""),
+                                     paste("delta: ",toString(round(x7,digits=4)),sep=""),
+                                     paste("LL: ",toString(round(-LL)),sep="")),
+            lty = c(1,1,1,0,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0,0),
+            col = c("blue","purple","black","white","white","white","white","white","white","white"), cex=0.9)
   }
   
-  #ADD LEGEND here and above
   #Exponential, Both Covar
   if (modelType == 1 && length(covariates) == 2) {
       e3Cov <- function(x) { ## function to optimize
@@ -191,6 +225,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       imatr$Pt<-1-exp(-x1*imatr$A)
       imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
       imatr$dP[1]=imatr$Pt[1]
+      imatr$LL=imatr$sales*log(imatr$dP)
+      LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
       
       plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
       plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -200,7 +236,16 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       
       lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
       lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2)
-      legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"), lty = c(1,1,1), lwd = c(2,2,2), col = c("blue","purple","black"))
+      legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
+                                       paste("lambda: ",toString(round(x1,digits=4)),sep=""),
+                                       paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
+                                       paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
+                                       paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
+                                       paste("gamma: ",toString(round(x6,digits=4)),sep=""),
+                                       paste("delta: ",toString(round(x7,digits=4)),sep=""),
+                                       paste("LL: ",toString(round(-LL)),sep="")),
+              lty = c(1,1,1,0,0,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0,0,0),
+              col = c("blue","purple","black","white","white","white","white","white","white","white","white"), cex=0.9)
   }
   
   #Weibull Model
@@ -227,6 +272,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           imatr$Pt<-1-exp(-x1*imatr$A)
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
+          imatr$LL=imatr$sales*log(imatr$dP)
+          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
           
           plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
           plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -239,9 +286,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
                                            paste("lambda: ",toString(round(x1,digits=4)),sep=""),
                                            paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x2,digits=4)),sep="")),
-                                           lty = c(1,1,1,0,0,0), lwd = c(2,2,2,0,0,0),
-                                           col = c("blue","purple","black","white","white","white"), cex=0.9)
+                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
+                                           paste("LL: ",toString(round(-LL)),sep="")),
+                                           lty = c(1,1,1,0,0,0,0), lwd = c(2,2,2,0,0,0,0),
+                                           col = c("blue","purple","black","white","white","white","white"), cex=0.9)
         }
   
   
@@ -268,9 +316,11 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           x4 <- x[4] #alpha
           imatr$exb=exp(imatr$adv..bn.*x2)
           imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
-          imatr$Pt<-1-exp(-x1*imatr$A)
+          imatr$Pt<-1-((x4/(x4+imatr$A)))^x1
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
+          imatr$LL=imatr$sales*log(imatr$dP)
+          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
           
           plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
           plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -284,9 +334,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                                            paste("r: ",toString(round(x1,digits=4)),sep=""),
                                            paste("alpha: ",toString(round(x4,digits=4)),sep=""),
                                            paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x2,digits=4)),sep="")),
-                                            lty = c(1,1,1,0,0,0,0), lwd = c(2,2,2,0,0,0,0),
-                                            col = c("blue","purple","black","white","white","white","white"), cex=0.9)
+                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
+                                           paste("LL: ",toString(round(-LL)),sep="")),
+                                            lty = c(1,1,1,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0),
+                                            col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
     }
           
         #Weibull, iMac Covar
@@ -315,6 +366,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           imatr$Pt<-1-exp(-x1*imatr$A)
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
+          imatr$LL=imatr$sales*log(imatr$dP)
+          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
           
           plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
           plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -328,9 +381,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                                            paste("lambda: ",toString(round(x1,digits=4)),sep=""),
                                            paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
                                            paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("b_iMac: ",toString(round(x4,digits=4)),sep="")),
-                                            lty = c(1,1,1,0,0,0,0), lwd = c(2,2,2,0,0,0,0),
-                                            col = c("blue","purple","black","white","white","white","white"), cex=0.9)
+                                           paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
+                                           paste("LL: ",toString(round(-LL)),sep="")),
+                                            lty = c(1,1,1,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0),
+                                            col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
         }
   
   #Weibull, Steve Covar
@@ -365,6 +419,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     imatr$Pt<-1-exp(-x1*imatr$A)
     imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
     imatr$dP[1]=imatr$Pt[1]
+    imatr$LL=imatr$sales*log(imatr$dP)
+    LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
     
     plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
     plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -380,9 +436,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             paste("c: ",toString(round(x3,digits=4)),sep=""),
             paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
             paste("gamma: ",toString(round(x6,digits=4)),sep=""),
-            paste("delta: ",toString(round(x7,digits=4)),sep="")),
-            lty = c(1,1,1,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0),
-            col = c("blue","purple","black","white","white","white","white","white","white"), cex=0.9)
+            paste("delta: ",toString(round(x7,digits=4)),sep=""),
+            paste("LL: ",toString(round(-LL)),sep="")),
+            lty = c(1,1,1,0,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0,0),
+            col = c("blue","purple","black","white","white","white","white","white","white","white"), cex=0.9)
   }
     
   #Weibull, iMac & Steve Covars
@@ -419,6 +476,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
         imatr$Pt<-1-exp(-x1*imatr$A)
         imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
         imatr$dP[1]=imatr$Pt[1]
+        imatr$LL=imatr$sales*log(imatr$dP)
+        LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
         
         plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
         plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
@@ -435,9 +494,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                                                     paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
                                                     paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
                                                     paste("gamma: ",toString(round(x6,digits=4)),sep=""),
-                                                    paste("delta: ",toString(round(x7,digits=4)),sep="")),
-                                                  lty = c(1,1,1,0,0,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0,0,0),
-                                                  col = c("blue","purple","black","white","white","white","white","white","white","white"), cex=0.9)
+                                                    paste("delta: ",toString(round(x7,digits=4)),sep=""),
+                                                    paste("LL: ",toString(round(-LL)),sep="")),
+                                                  lty = c(1,1,1,0,0,0,0,0,0,0,0), lwd = c(2,2,2,0,0,0,0,0,0,0,0),
+                                                  col = c("blue","purple","black","white","white","white","white","white","white","white","white","white"), cex=0.9)
         }
 }
 

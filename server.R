@@ -54,7 +54,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
         
           z <- cbind(lambda = x1, b_ads = x2, LL = -LL)
           rownames(z) <- "parameters"
-          z
+          
           
           }
   
@@ -103,7 +103,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
         
           z <- cbind(r = x1, alpha = x2, b_ads = x3, LL = -LL)
           rownames(z) <- "parameters"
-          z
+          
           
           }
               
@@ -152,7 +152,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
               
                 z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, LL = -LL)
                 rownames(z) <- "parameters"
-                z
+                
                 
                 }
       
@@ -209,7 +209,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
   
     z <- cbind(lambda = x1, b_ads = x2, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
     rownames(z) <- "parameters"
-    z
+    
     
     }
   
@@ -269,7 +269,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
   
       z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
       rownames(z) <- "parameters"
-      z
+      
       
       }
   
@@ -318,7 +318,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
        
           z <- cbind(lambda = x1, b_ads = x2, c = x3, LL = -LL)
           rownames(z) <- "parameters"
-          z
+          
           
            }
   
@@ -371,7 +371,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
    
           z <- cbind(r = x1, alpha = x4, b_ads = x2, c = x3, LL = -LL)
           rownames(z) <- "parameters"
-          z
+          
           
            }
           
@@ -423,7 +423,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
        
           z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, LL = -LL)
           rownames(z) <- "parameters"
-          z
+          
           
         }
   #Weibull, Steve Covar
@@ -483,7 +483,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
   
     z <- cbind(lambda = x1, b_ads = x2, c = x3, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
     rownames(z) <- "parameters"
-    z
+   
     
   }
   
@@ -547,13 +547,13 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     
     z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
     rownames(z) <- "parameters"
-    z
   }
+  z
 }
 
 shinyServer(
   function(input, output) {
-    output$taxiPlot <- renderPlot({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
-    output$z <- renderTable({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
+    output$plot <- renderPlot({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
+    output$table <- renderTable({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
     }
   )

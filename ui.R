@@ -11,8 +11,8 @@ shinyUI(fluidPage(
       sliderInput('endQuarter', 'Choose the ending Quarter (1: Q1-06, 40: Q4-15)', min = 1, max = 40, value = 40)
     ),
     mainPanel(
-      plotOutput('taxiPlot'),
-               tableOutput('z')
+      plotOutput('plot'),
+      tableOutput('table')
     )
   )
 ))

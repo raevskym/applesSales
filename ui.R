@@ -12,7 +12,7 @@ shinyUI(fluidPage(
     ),
     mainPanel(
       plotOutput('plot'),
-      tableOutput('table')
-    )
+      tableOutput('table')    
+      )
   )
 ))

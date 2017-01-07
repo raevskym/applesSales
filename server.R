@@ -5,6 +5,7 @@ library(BH)
 
 
 #ALTERNATE MIXTURES NOT RESOLVED (i.e. WG and 1Cov/2Cov)
+#ADD PREDICTION INTO 2016
 
 #data input and clear
 iData <- read.csv("iData.csv")
@@ -46,11 +47,9 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                           paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                           paste("LL: ",toString(round(-LL)),sep="")),
-                                           lty = c(1,1,1,0,0,0), lwd = c(2,2,1,0,0,0), col = c("blue","purple","black","white","white","white"), cex=0.9)
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                          
+                                           lty = c(1,1,1), lwd = c(2,2,1), col = c("blue","purple","black"))
         
           z <- cbind(lambda = x1, b_ads = x2, LL = -LL)
           rownames(z) <- "parameters"
@@ -93,13 +92,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                           paste("r: ",toString(round(x1,digits=4)),sep=""),
-                                           paste("alpha: ",toString(round(x2,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("LL: ",toString(round(-LL)),sep="")),
-                  lty = c(1,1,1,0,0,0,0), lwd = c(2,2,1,0,0,0,0),
-                  col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                           
+                  lty = c(1,1,1), lwd = c(2,2,1),
+                  col = c("blue","purple","black"))
         
           z <- cbind(r = x1, alpha = x2, b_ads = x3, LL = -LL)
           rownames(z) <- "parameters"
@@ -142,13 +138,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                 
                 lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
                 lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-                legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                                 paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                                 paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                                 paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
-                                                 paste("LL: ",toString(round(-LL)),sep="")),
-                        lty = c(1,1,1,0,0,0,0), lwd = c(2,2,1,0,0,0,0),
-                        col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
+                legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                                
+                        lty = c(1,1,1), lwd = c(2,2,1),
+                        col = c("blue","purple","black"))
               
                 z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, LL = -LL)
                 rownames(z) <- "parameters"
@@ -197,15 +190,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     
     lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
     lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                     paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                     paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                     paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
-                                     paste("gamma: ",toString(round(x6,digits=4)),sep=""),
-                                     paste("delta: ",toString(round(x7,digits=4)),sep=""),
-                                     paste("LL: ",toString(round(-LL)),sep="")),
-            lty = c(1,1,1,0,0,0,0,0,0), lwd = c(2,2,1,0,0,0,0,0,0),
-            col = c("blue","purple","black","white","white","white","white","white","white","white"), cex=0.9)
+    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                  
+            lty = c(1,1,1), lwd = c(2,2,1),
+            col = c("blue","purple","black"))
   
     z <- cbind(lambda = x1, b_ads = x2, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
     rownames(z) <- "parameters"
@@ -256,16 +244,10 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       
       lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
       lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-      legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                       paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                       paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                       paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
-                                       paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
-                                       paste("gamma: ",toString(round(x6,digits=4)),sep=""),
-                                       paste("delta: ",toString(round(x7,digits=4)),sep=""),
-                                       paste("LL: ",toString(round(-LL)),sep="")),
-              lty = c(1,1,1,0,0,0,0,0,0,0), lwd = c(2,2,1,0,0,0,0,0,0,0),
-              col = c("blue","purple","black","white","white","white","white","white","white","white","white"), cex=0.9)
+      legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                       
+              lty = c(1,1,1), lwd = c(2,2,1),
+              col = c("blue","purple","black"))
   
       z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
       rownames(z) <- "parameters"
@@ -308,13 +290,9 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                           paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                           paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                           paste("LL: ",toString(round(-LL)),sep="")),
-                                           lty = c(1,1,1,0,0,0,0), lwd = c(2,2,1,0,0,0,0),
-                                           col = c("blue","purple","black","white","white","white","white"), cex=0.9)
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                           lty = c(1,1,1), lwd = c(2,2,1),
+                                           col = c("blue","purple","black"))
        
           z <- cbind(lambda = x1, b_ads = x2, c = x3, LL = -LL)
           rownames(z) <- "parameters"
@@ -360,14 +338,9 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                           paste("r: ",toString(round(x1,digits=4)),sep=""),
-                                           paste("alpha: ",toString(round(x4,digits=4)),sep=""),
-                                           paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                           paste("LL: ",toString(round(-LL)),sep="")),
-                                            lty = c(1,1,1,0,0,0,0,0), lwd = c(2,2,1,0,0,0,0,0),
-                                            col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                            lty = c(1,1,1), lwd = c(2,2,1),
+                                            col = c("blue","purple","black"))
    
           z <- cbind(r = x1, alpha = x4, b_ads = x2, c = x3, LL = -LL)
           rownames(z) <- "parameters"
@@ -412,14 +385,9 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           
           lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
           lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                           paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                           paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                           paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                           paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
-                                           paste("LL: ",toString(round(-LL)),sep="")),
-                                            lty = c(1,1,1,0,0,0,0,0), lwd = c(2,2,1,0,0,0,0,0),
-                                            col = c("blue","purple","black","white","white","white","white","white"), cex=0.9)
+          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+                                            lty = c(1,1,1), lwd = c(2,2,1),
+                                            col = c("blue","purple","black"))
        
           z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, LL = -LL)
           rownames(z) <- "parameters"
@@ -469,16 +437,9 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     
     lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
     lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                     paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                     paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                     paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                     paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
-                                     paste("gamsma: ",toString(round(x6,digits=4)),sep=""),
-                                     paste("delta: ",toString(round(x7,digits=4)),sep=""),
-                                     paste("LL: ",toString(round(-LL)),sep="")),
-            lty = c(1,1,1,0,0,0,0,0,0), lwd = c(2,2,1,0,0,0,0,0,0),
-            col = c("blue","purple","black","white","white","white","white","white","white","white"), cex=0.9)
+    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+            lty = c(1,1,1), lwd = c(2,2,1),
+            col = c("blue","purple","black"))
     
   
     z <- cbind(lambda = x1, b_ads = x2, c = x3, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
@@ -532,17 +493,9 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     
     lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
     lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)",
-                                     paste("lambda: ",toString(round(x1,digits=4)),sep=""),
-                                     paste("b_ads: ",toString(round(x2,digits=4)),sep=""),
-                                     paste("c: ",toString(round(x3,digits=4)),sep=""),
-                                     paste("b_iMac: ",toString(round(x4,digits=4)),sep=""),
-                                     paste("b_jobs: ",toString(round(x5,digits=4)),sep=""),
-                                     paste("gamma: ",toString(round(x6,digits=4)),sep=""),
-                                     paste("delta: ",toString(round(x7,digits=4)),sep=""),
-                                     paste("LL: ",toString(round(-LL)),sep="")),
-            lty = c(1,1,1,0,0,0,0,0,0,0,0), lwd = c(2,2,1,0,0,0,0,0,0,0,0),
-            col = c("blue","purple","black","white","white","white","white","white","white","white","white","white"), cex=0.9)
+    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+            lty = c(1,1,1), lwd = c(2,2,1),
+            col = c("blue","purple","black"))
     
     
     z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
@@ -554,6 +507,6 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
 shinyServer(
   function(input, output) {
     output$plot <- renderPlot({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
-    output$table <- renderTable({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
+    output$table <- renderTable({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)}, digits = 4)
     }
   )

@@ -24,8 +24,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             imatr$Pt<-1-exp(-x1*imatr$A)
             imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
             imatr$dP[1]=imatr$Pt[1]
-            imatr$LL=imatr$sales*log(imatr$dP)
-            -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+            imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+            -sum(imatr$LL[1:41])
           }
           initial_guess=c(.005, 2)
           x <- optim(initial_guess, eCov)$par
@@ -36,22 +36,12 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           imatr$Pt<-1-exp(-x1*imatr$A)
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
-          imatr$LL=imatr$sales*log(imatr$dP)
-          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-          
-          plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          
-          taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                            lwd=2, ylim = c(plotMin, plotMax))
-          
-          lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-          lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                          
-                                           lty = c(1,1,1), lwd = c(2,2,1), col = c("blue","purple","black"))
+          imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+          LL <- -sum(imatr$LL[1:41])
+          imatr$exp <- imatr$dP * 150542
+          MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
         
-          z <- cbind(lambda = x1, b_ads = x2, LL = -LL)
+          z <- cbind(lambda = x1, b_ads = x2, LL = -LL, MAPE = MAPE)
           rownames(z) <- "parameters"
           
           
@@ -68,8 +58,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             imatr$Pt<-1-((x2/(x2+imatr$A)))^x1
             imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
             imatr$dP[1]=imatr$Pt[1]
-            imatr$LL=imatr$sales*log(imatr$dP)
-            -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+            imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+            -sum(imatr$LL[1:41])
           }
           initial_guess=c(300, 50000, 1.5)
           optim(initial_guess, EG)
@@ -81,23 +71,12 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           imatr$Pt<-1-((x2/(x2+imatr$A)))^x1
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
-          imatr$LL=imatr$sales*log(imatr$dP)
-          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-          
-          plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          
-          taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                            lwd=2, ylim = c(plotMin, plotMax))
-          
-          lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-          lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                           
-                  lty = c(1,1,1), lwd = c(2,2,1),
-                  col = c("blue","purple","black"))
+          imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+          LL <- -sum(imatr$LL[1:41])
+          imatr$exp <- imatr$dP * 150542
+          MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
         
-          z <- cbind(r = x1, alpha = x2, b_ads = x3, LL = -LL)
+          z <- cbind(r = x1, alpha = x2, b_ads = x3, LL = -LL, MAPE = MAPE)
           rownames(z) <- "parameters"
           
           
@@ -114,8 +93,8 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                 imatr$Pt<-1-exp(-x1*imatr$A)
                 imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
                 imatr$dP[1]=imatr$Pt[1]
-                imatr$LL=imatr$sales*log(imatr$dP)
-                -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+                imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+                -sum(imatr$LL[1:41])
               }
                 initial_guess=c(.005, 1.5, 0.5)
                 x <- optim(initial_guess, e2Cov)$par
@@ -127,23 +106,13 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
                 imatr$Pt<-1-exp(-x1*imatr$A)
                 imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
                 imatr$dP[1]=imatr$Pt[1]
-                imatr$LL=imatr$sales*log(imatr$dP)
-                LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-                
-                plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-                plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-                
-                taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                                  lwd=2, ylim = c(plotMin, plotMax))
-                
-                lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-                lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-                legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                                
-                        lty = c(1,1,1), lwd = c(2,2,1),
-                        col = c("blue","purple","black"))
-              
-                z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, LL = -LL)
+                imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+                LL <- -sum(imatr$LL[1:41])
+                imatr$exp <- imatr$dP * 150542
+                MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
+               
+                 
+                z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, LL = -LL, MAPE = MAPE)
                 rownames(z) <- "parameters"
                 
                 
@@ -157,14 +126,14 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       x5 <- x[3] #b_steve
       x6 <- x[4] #gamma
       x7 <- x[5] #delta
-      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
       imatr$exb=exp(imatr$adv..bn.*x2 + imatr$sJobs*x5)
       imatr$A=cumsum(imatr$exb)
       imatr$Pt<-1-exp(-x1*imatr$A)
       imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
       imatr$dP[1]=imatr$Pt[1]
-      imatr$LL=imatr$sales*log(imatr$dP)
-      -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+      imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+      -sum(imatr$LL[1:41])
     }
     initial_guess=c(0.005, 1.5, 0.5, 0.2, 14)
     x <- optim(initial_guess, e2CovJobs)$par
@@ -173,29 +142,19 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     x5 <- x[3] #b_steve
     x6 <- x[4] #gamma
     x7 <- x[5] #delta
-    imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+    imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
     imatr$exb=exp(imatr$adv..bn.*x2 + imatr$sJobs*x5)
     imatr$A=cumsum(imatr$exb)
     imatr$Pt<-1-exp(-x1*imatr$A)
     imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
     imatr$dP[1]=imatr$Pt[1]
-    imatr$LL=imatr$sales*log(imatr$dP)
-    LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+    imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+    LL <- -sum(imatr$LL[1:41])
+    imatr$exp <- imatr$dP * 150542
+    MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
+ 
     
-    plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-    plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-    
-    taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                      lwd=2, ylim = c(plotMin, plotMax))
-    
-    lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-    lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                  
-            lty = c(1,1,1), lwd = c(2,2,1),
-            col = c("blue","purple","black"))
-  
-    z <- cbind(lambda = x1, b_ads = x2, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
+    z <- cbind(lambda = x1, b_ads = x2, b_jobs = x5, gamma = x6, delta = x7, LL = -LL, MAPE = MAPE)
     rownames(z) <- "parameters"
     
     
@@ -210,14 +169,14 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
         x5 <- x[4] #b_steve
         x6 <- x[5] #gamma
         x7 <- x[6] #delta
-        imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+        imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
         imatr$exb=exp(imatr$adv..bn.*x2 + imatr$iMac*x4 + imatr$sJobs*x5)
         imatr$A=cumsum(imatr$exb)
         imatr$Pt<-1-exp(-x1*imatr$A)
         imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
         imatr$dP[1]=imatr$Pt[1]
-        imatr$LL=imatr$sales*log(imatr$dP)
-        -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+        imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+        -sum(imatr$LL[1:41])
       }
       initial_guess=c(0.005, 1.5, 0.5, 0.5, 0.2, 14)
       optim(initial_guess, e3Cov)
@@ -227,29 +186,18 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       x5 <- optim(initial_guess, e3Cov)$par[4] #b_steve
       x6 <- optim(initial_guess, e3Cov)$par[5] #gamma
       x7 <- optim(initial_guess, e3Cov)$par[6] #delta
-      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
       imatr$exb=exp(imatr$adv..bn.*x2 + imatr$iMac*x4 + imatr$sJobs*x5)
       imatr$A=cumsum(imatr$exb)
       imatr$Pt<-1-exp(-x1*imatr$A)
       imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
       imatr$dP[1]=imatr$Pt[1]
-      imatr$LL=imatr$sales*log(imatr$dP)
-      LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+      imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+      LL <- -sum(imatr$LL[1:41])
+      imatr$exp <- imatr$dP * 150542
+      MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
       
-      plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-      plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-      
-      taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                        lwd=2, ylim = c(plotMin, plotMax))
-      
-      lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-      lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-      legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                       
-              lty = c(1,1,1), lwd = c(2,2,1),
-              col = c("blue","purple","black"))
-  
-      z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
+      z <- cbind(lambda = x1, b_ads = x2, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL, MAPE = MAPE)
       rownames(z) <- "parameters"
       
       
@@ -262,12 +210,12 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             x2 <- x[2] # beta
             x3 <- x[3] # c
             imatr$exb=exp(imatr$adv..bn.*x2)
-            imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+            imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
             imatr$Pt<-1-exp(-x1*imatr$A)
             imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
             imatr$dP[1]=imatr$Pt[1]
-            imatr$LL=imatr$sales*log(imatr$dP)
-            -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+            imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+            -sum(imatr$LL[1:41])
           }
           initial_guess=c(.001, 1.5, 1.5)
           x <- optim(initial_guess, wCov)$par
@@ -275,26 +223,16 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           x2 <- x[2] # beta
           x3 <- x[3] # c
           imatr$exb=exp(imatr$adv..bn.*x2)
-          imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+          imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
           imatr$Pt<-1-exp(-x1*imatr$A)
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
-          imatr$LL=imatr$sales*log(imatr$dP)
-          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-          
-          plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          
-          taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                            lwd=2, ylim = c(plotMin, plotMax))
-          
-          lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-          lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                           lty = c(1,1,1), lwd = c(2,2,1),
-                                           col = c("blue","purple","black"))
-       
-          z <- cbind(lambda = x1, b_ads = x2, c = x3, LL = -LL)
+          imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+          LL <- -sum(imatr$LL[1:41])
+          imatr$exp <- imatr$dP * 150542
+          MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
+         
+          z <- cbind(lambda = x1, b_ads = x2, c = x3, LL = -LL, MAPE = MAPE)
           rownames(z) <- "parameters"
           
           
@@ -309,12 +247,12 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             x3 <- x[3] # c
             x4 <- x[4] #alpha
             imatr$exb=exp(imatr$adv..bn.*x2)
-            imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+            imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
             imatr$Pt<-1-((x4/(x4+imatr$A)))^x1
             imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
             imatr$dP[1]=imatr$Pt[1]
-            imatr$LL=imatr$sales*log(imatr$dP)
-            -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+            imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+            -sum(imatr$LL[1:41])
           }
           initial_guess=c(300, 1.5, 1.5, 30000)
           x <- optim(initial_guess, WG)$par
@@ -323,26 +261,17 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           x3 <- x[3] # c
           x4 <- x[4] #alpha
           imatr$exb=exp(imatr$adv..bn.*x2)
-          imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+          imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
           imatr$Pt<-1-((x4/(x4+imatr$A)))^x1
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
-          imatr$LL=imatr$sales*log(imatr$dP)
-          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+          imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+          LL <- -sum(imatr$LL[1:41])
+          imatr$exp <- imatr$dP * 150542
+          MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
+         
           
-          plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          
-          taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                            lwd=2, ylim = c(plotMin, plotMax))
-          
-          lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-          lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                            lty = c(1,1,1), lwd = c(2,2,1),
-                                            col = c("blue","purple","black"))
-   
-          z <- cbind(r = x1, alpha = x4, b_ads = x2, c = x3, LL = -LL)
+          z <- cbind(r = x1, alpha = x4, b_ads = x2, c = x3, LL = -LL, MAPE = MAPE)
           rownames(z) <- "parameters"
           
           
@@ -356,12 +285,12 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             x3 <- x[3] # c
             x4 <- x[4] #b_iMac
             imatr$exb=exp(imatr$adv..bn.*x2 + imatr$iMac*x4)
-            imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+            imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
             imatr$Pt<-1-exp(-x1*imatr$A)
             imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
             imatr$dP[1]=imatr$Pt[1]
-            imatr$LL=imatr$sales*log(imatr$dP)
-            -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+            imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+            -sum(imatr$LL[1:41])
           }
           initial_guess=c(0.005, 1.5, 1.5, 0.5)
           x <- optim(initial_guess, w2Cov)$par
@@ -370,26 +299,16 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
           x3 <- x[3] #c
           x4 <- x[4] #b_iMac
           imatr$exb=exp(imatr$adv..bn.*x2 + imatr$iMac*x4)
-          imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+          imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
           imatr$Pt<-1-exp(-x1*imatr$A)
           imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
           imatr$dP[1]=imatr$Pt[1]
-          imatr$LL=imatr$sales*log(imatr$dP)
-          LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-          
-          plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-          
-          taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                            lwd=2, ylim = c(plotMin, plotMax))
-          
-          lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-          lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-          legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-                                            lty = c(1,1,1), lwd = c(2,2,1),
-                                            col = c("blue","purple","black"))
-       
-          z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, LL = -LL)
+          imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+          LL <- -sum(imatr$LL[1:41])
+          imatr$exp <- imatr$dP * 150542
+          MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
+        
+          z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, LL = -LL, MAPE = MAPE)
           rownames(z) <- "parameters"
           
           
@@ -403,14 +322,14 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       x5 <- x[4] #b_steve
       x6 <- x[5] #gamma
       x7 <- x[6] #delta
-      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
       imatr$exb=exp(imatr$adv..bn.*x2 + imatr$sJobs*x5)
-      imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+      imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
       imatr$Pt<-1-exp(-x1*imatr$A)
       imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
       imatr$dP[1]=imatr$Pt[1]
-      imatr$LL=imatr$sales*log(imatr$dP)
-      -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+      imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+      -sum(imatr$LL[1:41])
     }
     initial_guess=c(0.005, 1.5, 1.5, 0.5, 0.2, 14)
     optim(initial_guess, w2CovJobs)
@@ -420,29 +339,19 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     x5 <- optim(initial_guess, w2CovJobs)$par[4] #b_steve
     x6 <- optim(initial_guess, w2CovJobs)$par[5] #gamma
     x7 <- optim(initial_guess, w2CovJobs)$par[6] #delta
-    imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+    imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
     imatr$exb=exp(imatr$adv..bn.*x2 + imatr$sJobs*x5)
-    imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+    imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
     imatr$Pt<-1-exp(-x1*imatr$A)
     imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
     imatr$dP[1]=imatr$Pt[1]
-    imatr$LL=imatr$sales*log(imatr$dP)
-    LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-    
-    plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-    plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-    
-    taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                      lwd=2, ylim = c(plotMin, plotMax))
-    
-    lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-    lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-            lty = c(1,1,1), lwd = c(2,2,1),
-            col = c("blue","purple","black"))
+    imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+    LL <- -sum(imatr$LL[1:41])
+    imatr$exp <- imatr$dP * 150542
+    MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
     
   
-    z <- cbind(lambda = x1, b_ads = x2, c = x3, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
+    z <- cbind(lambda = x1, b_ads = x2, c = x3, b_jobs = x5, gamma = x6, delta = x7, LL = -LL, MAPE = MAPE)
     rownames(z) <- "parameters"
    
     
@@ -458,16 +367,16 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       x5 <- x[5] #b_steve
       x6 <- x[6] #gamma
       x7 <- x[7] #delta
-      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+      imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
       imatr$exb=exp(imatr$adv..bn.*x2 + imatr$iMac*x4 + imatr$sJobs*x5)
-      imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+      imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
       imatr$Pt<-1-exp(-x1*imatr$A)
       imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
       imatr$dP[1]=imatr$Pt[1]
-      imatr$LL=imatr$sales*log(imatr$dP)
-      -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
+      imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+      -sum(imatr$LL[1:41])
     }
-    initial_guess=c(0.005, 1.5, 1.5, 0.5, 0.5, 0.2, 14)
+    initial_guess=c(0.005, 1.5, 1.5, 0.5, 0.2, 0.2, 13.5)
     optim(initial_guess, w3Cov)
     x1 <- optim(initial_guess, w3Cov)$par[1] #lamda
     x2 <- optim(initial_guess, w3Cov)$par[2] #b_ads
@@ -476,31 +385,34 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     x5 <- optim(initial_guess, w3Cov)$par[5] #b_steve
     x6 <- optim(initial_guess, w3Cov)$par[6] #gamma
     x7 <- optim(initial_guess, w3Cov)$par[7] #delta
-    imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:40])
+    imatr$sJobs <- c(array(0, c(1,23)), 1-x6*(1-exp(-x7*abs(imatr$t-24)))[24:44])
     imatr$exb=exp(imatr$adv..bn.*x2 + imatr$iMac*x4 + imatr$sJobs*x5)
-    imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:39]))^x3)*imatr$exb)
+    imatr$A=cumsum(((imatr$t^x3) - (c(0, imatr$t[1:43]))^x3)*imatr$exb)
     imatr$Pt<-1-exp(-x1*imatr$A)
     imatr$dP[2:nrow(imatr)]=diff(imatr$Pt)
     imatr$dP[1]=imatr$Pt[1]
-    imatr$LL=imatr$sales*log(imatr$dP)
-    LL <- -sum(imatr$LL, (150452-sum(imatr[,3]))*log(1-imatr$Pt[40]))
-    
-    plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-    plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:endQuarter,3]), (imatr[startQuarter:endQuarter,4]*5000))
-    
-    taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
-                      lwd=2, ylim = c(plotMin, plotMax))
-    
-    lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="purple")
-    lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=1)
-    legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
-            lty = c(1,1,1), lwd = c(2,2,1),
-            col = c("blue","purple","black"))
+    imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
+    LL <- -sum(imatr$LL[1:41])
+    imatr$exp <- imatr$dP * 150542
+    MAPE <- mean(abs((imatr$sales[1:40]-imatr$exp[1:40])/imatr$sales[1:40]))
     
     
-    z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL)
+    z <- cbind(lambda = x1, b_ads = x2, c = x3, b_iMac = x4, b_jobs = x5, gamma = x6, delta = x7, LL = -LL, MAPE = MAPE)
     rownames(z) <- "parameters"
   }
+  
+  plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:(endQuarter-1),3]), (imatr[startQuarter:endQuarter,4]*5000))
+  plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:(endQuarter-1),3]), (imatr[startQuarter:endQuarter,4]*5000))
+  
+  taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
+                    lwd=2, ylim = c(0, plotMax))
+  
+  lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="red")
+  lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
+  legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+          lty = c(1,1,2), lwd = c(2,2,1),
+          col = c("blue","red","black"))
+  
   z
 }
 

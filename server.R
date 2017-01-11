@@ -419,18 +419,20 @@ tripsPlot <- function(startQuarter, modelType, covariates, mixture) {
 
 description <- function(startQuarter, modelType, covariates, mixture) {
   #Weibull, iMac & Steve Covars
-  if (modelType == 2 && length(covariates) == 2) {
-    "With a Mean Average Percent Error (MAPE) of less than .13, this model demonstrates better fit than all other probability models and traditional regression methods)"
-  }
   if (mixture) {
-    "Adding a mixing distribution has no impact on this particular dataset, implying relatively homogenous purchase behaviors among the customers. To see this directly, try removing both extra covariates, and toggling the gamma mixture."}
+    "Adding a mixing distribution has no impact on this particular dataset, implying relatively homogenous purchase behaviors among the customers. To visualize, try removing both extra covariates, and toggling the gamma mixture."
+  }
+  if (modelType == 2 && length(covariates) == 2) {
+    "With a Mean Average Percent Error (MAPE) of less than .13, this model demonstrates better fit than all other probability models and traditional regression methods"
+  }
   else {"mookies"}
 }
 
+  
 shinyServer(
   function(input, output) {
     output$plot <- renderPlot({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture)})
     output$table <- renderTable({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture)}, digits = 4)
-    output$description <- renderPrint({description(input$startQuarter, input$modelType, input$covariates, input$mixture)})
+    output$description <- renderText({description(input$startQuarter, input$modelType, input$covariates, input$mixture)})
     }
   )

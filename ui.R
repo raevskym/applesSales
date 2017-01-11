@@ -10,9 +10,11 @@ shinyUI(fluidPage(
       sliderInput('startQuarter', 'Choose Date Range (1: Q1 2006, 44: Q4 2016)', min = 1, max = 44, value = c(1,44))
     ),
     mainPanel(
-      plotOutput('plot'),
-      tableOutput('table'),
-      textOutput('description')
+      plotOutput('plot')
       )
-  )
-))
+  ),
+  fluidRow(
+    column(12,
+      tableOutput('table'),
+      verbatimTextOutput('description')
+))))

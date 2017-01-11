@@ -13,7 +13,7 @@ imatr <- iData
 imatr[,3] <- as.numeric(gsub(",","",imatr[,3]))
 range.ex <- function(x, fac=1.2) { xrg <- range(x);  m <- mean(xrg);  (xrg - m)*fac + m }
 
-tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) {
+tripsPlot <- function(startQuarter, modelType, covariates, mixture) {
         if (modelType == 1 && !mixture) {
           #Exponential Model
           eCov <- function(x) { ## function to optimize
@@ -204,7 +204,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
       }
   
   #Weibull Model
-        if (modelType == 2 && length(covariates) == 0) {
+        if (modelType == 2 && length(covariates) == 0 && !mixture) {
           wCov <- function(x) { ## function to optimize
             x1 <- x[1] #lambda
             x2 <- x[2] # beta
@@ -254,7 +254,7 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
             imatr$LL <- c((imatr$sales[1:40])*(log(imatr$dP)[1:40]), (150452-sum(imatr[1:40,3]))*log(1-imatr$Pt[40]), NA, NA, NA)
             -sum(imatr$LL[1:41])
           }
-          initial_guess=c(300, 1.5, 1.5, 30000)
+          initial_guess=c(80, 1.5, 1.5, 30000)
           x <- optim(initial_guess, WG)$par
           x1 <- x[1] #r
           x2 <- x[2] # beta
@@ -401,24 +401,36 @@ tripsPlot <- function(startQuarter, endQuarter, modelType, covariates, mixture) 
     rownames(z) <- "parameters"
   }
   
-  plotMin <- min((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:(endQuarter-1),3]), (imatr[startQuarter:endQuarter,4]*5000))
-  plotMax <- max((imatr$dP[startQuarter:endQuarter] * 150452), (imatr[startQuarter:(endQuarter-1),3]), (imatr[startQuarter:endQuarter,4]*5000))
   
-  taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter, endQuarter), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
+  plotMin <- min((imatr$dP[startQuarter[1]:startQuarter[2]] * 150452), (imatr[startQuarter[1]:(startQuarter[2]-1),3]), (imatr[startQuarter[1]:startQuarter[2],4]*5000))
+  plotMax <- max((imatr$dP[startQuarter[1]:startQuarter[2]] * 150452), (imatr[startQuarter[1]:(startQuarter[2]-1),3]), (imatr[startQuarter[1]:startQuarter[2],4]*5000))
+  
+  taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter[1], startQuarter[2]), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
                     lwd=2, ylim = c(0, plotMax))
   
   lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="red")
   lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
-  legend (startQuarter, plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
           lty = c(1,1,2), lwd = c(2,2,1),
           col = c("blue","red","black"))
   
   z
 }
 
+description <- function(startQuarter, modelType, covariates, mixture) {
+  #Weibull, iMac & Steve Covars
+  if (modelType == 2 && length(covariates) == 2) {
+    "With a Mean Average Percent Error (MAPE) of less than .13, this model demonstrates better fit than all other probability models and traditional regression methods)"
+  }
+  if (mixture) {
+    "Adding a mixing distribution has no impact on this particular dataset, implying relatively homogenous purchase behaviors among the customers. To see this directly, try removing both extra covariates, and toggling the gamma mixture."}
+  else {"mookies"}
+}
+
 shinyServer(
   function(input, output) {
-    output$plot <- renderPlot({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)})
-    output$table <- renderTable({tripsPlot(input$startQuarter, input$endQuarter, input$modelType, input$covariates, input$mixture)}, digits = 4)
+    output$plot <- renderPlot({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture)})
+    output$table <- renderTable({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture)}, digits = 4)
+    output$description <- renderPrint({description(input$startQuarter, input$modelType, input$covariates, input$mixture)})
     }
   )

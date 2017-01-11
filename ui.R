@@ -7,12 +7,12 @@ shinyUI(fluidPage(
       radioButtons('modelType', "Choose Individual-level Model", choices = c('Weibull' = 2, 'Exponential' = 1)),
       checkboxInput('mixture', "Add Gamma Distribution (Mixture Model)"),
       checkboxGroupInput('covariates', "More Covariates", choices = c('New iMac Releases' = 'ni', 'Steve Jobs Death' = 'jd'), selected = c('ni','jd')),
-      sliderInput('startQuarter', 'Choose the starting Quarter (1: Q1-06, 44: Q4-16)', min = 1, max = 44, value = 1),
-      sliderInput('endQuarter', 'Choose the ending Quarter (1: Q1-06, 44: Q4-16)', min = 1, max = 44, value = 44)
+      sliderInput('startQuarter', 'Choose Date Range (1: Q1 2006, 44: Q4 2016)', min = 1, max = 44, value = c(1,44))
     ),
     mainPanel(
       plotOutput('plot'),
-      tableOutput('table')
+      tableOutput('table'),
+      textOutput('description')
       )
   )
 ))

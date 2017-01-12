@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel("Impact of Apple Ad Expenses on iMac Sales"),
+  titlePanel("Impact of Apple Ad Expenditures on iMac Sales"),
   sidebarLayout(position = "right",
     sidebarPanel(
       radioButtons('modelType', "Choose Individual-level Model", choices = c('Weibull' = 2, 'Exponential' = 1)),

@@ -4,8 +4,7 @@ library(lubridate)
 library(BH)
 
 
-#ALTERNATE MIXTURES NOT RESOLVED (i.e. WG and 1Cov/2Cov)
-#ADD PREDICTION INTO 2016
+#TO DO: DESCRIPTIONS, BENCHMARK vs regression, Q4 2016 iMac Sales?
 
 #data input and clear
 iData <- read.csv("iData.csv")
@@ -405,12 +404,12 @@ tripsPlot <- function(startQuarter, modelType, covariates, mixture) {
   plotMin <- min((imatr$dP[startQuarter[1]:startQuarter[2]] * 150452), (imatr[startQuarter[1]:(startQuarter[2]-1),3]), (imatr[startQuarter[1]:startQuarter[2],4]*5000))
   plotMax <- max((imatr$dP[startQuarter[1]:startQuarter[2]] * 150452), (imatr[startQuarter[1]:(startQuarter[2]-1),3]), (imatr[startQuarter[1]:startQuarter[2],4]*5000))
   
-  taxiPlot <- plot (imatr[,1], imatr$dP * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter[1], startQuarter[2]), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
+  taxiPlot <- plot (imatr[1:43,1], imatr$dP[1:43] * 150452, type="l", col="blue", xlab="Quarter", xlim = c(startQuarter[1], startQuarter[2]), ylab="iMac Sales (in 1,000s)", pch=16, cex=1.2,
                     lwd=2, ylim = c(0, plotMax))
   
-  lines (imatr[,1], imatr[,3], pch=16, cex=1.2, lwd=2, col="red")
-  lines (imatr[,1], imatr[,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
-  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenses (covariate)"),
+  lines (imatr[1:43,1], imatr[1:43,3], pch=16, cex=1.2, lwd=2, col="red")
+  lines (imatr[1:40,1], imatr[1:40,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
+  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)"),
           lty = c(1,1,2), lwd = c(2,2,1),
           col = c("blue","red","black"))
   
@@ -422,10 +421,21 @@ description <- function(startQuarter, modelType, covariates, mixture) {
   if (mixture) {
     "Adding a mixing distribution has no impact on this particular dataset, implying relatively homogenous purchase behaviors among the customers. To visualize, try removing both extra covariates, and toggling the gamma mixture."
   }
-  if (modelType == 2 && length(covariates) == 2) {
-    "With a Mean Average Percent Error (MAPE) of less than .13, this model demonstrates better fit than all other probability models and traditional regression methods"
-  }
-  else {"mookies"}
+  else {
+    if (modelType == 1) {
+      "Exponential distributions are essentially Weibull distributions that don't account for duration dependence, c, which measures how the time since most recent purchase impacts repurchase likelihood. Thus for any c significantly greater than 1, Weibull will have better fit (lower MAPE)."
+    }
+    else {
+      if (modelType == 2 && length(covariates) == 2) {
+        "With a Mean Average Percent Error (MAPE) of less than .13, the Weibull (with all 3 covariates) demonstrates better fit than all other probability models and traditional regression methods.
+
+Note: model is trained on t = (1:40) and tested on t = (41:44), due to disclosed 2016 sales but undisclosed 2016 ad expenditures at time of analysis (Q4 2016)"
+      }
+        else {
+        "Unlike tradional regression methods (curve fitting), probability models predict sales by analyzing purchase behaviors of individual customers. Lambda measures the average customer's purchase propensity in a given period, betas measure the covariance between purchase likelihood and their given co-variable, Log Likelihood is the parameter we seek to maximize, and MAPE is a goodness-of-fit measure for comparing models."
+        }
+      }
+    }
 }
 
   

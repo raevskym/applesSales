@@ -16,5 +16,5 @@ shinyUI(fluidPage(
   fluidRow(
     column(12,
       tableOutput('table'),
-      verbatimTextOutput('description')
+      textOutput('description')
 ))))

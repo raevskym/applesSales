@@ -4,7 +4,8 @@ library(lubridate)
 library(BH)
 
 
-#TO DO: DESCRIPTIONS, BENCHMARK vs regression, Q4 2016 iMac Sales?
+#TO DO: BENCHMARK vs regression, Q4 2016 iMac Sales?
+
 
 #data input and clear
 iData <- read.csv("iData.csv")
@@ -409,9 +410,10 @@ tripsPlot <- function(startQuarter, modelType, covariates, mixture) {
   
   lines (imatr[1:43,1], imatr[1:43,3], pch=16, cex=1.2, lwd=2, col="red")
   lines (imatr[1:40,1], imatr[1:40,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
-  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)"),
-          lty = c(1,1,2), lwd = c(2,2,1),
-          col = c("blue","red","black"))
+  lines (within(data.frame(c(1:43)), ypred <- predict(lm((imatr$dP[1:43] * 150452)~c(1:43)), data.frame(c(1:43)))), col = "grey", pch=16, cex=1.2, lwd=2, lty=2)
+  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)","Linear Regression (benchmark)"),
+          lty = c(1,1,2,2), lwd = c(2,2,2,2),
+          col = c("blue","red","black","grey"))
   
   z
 }

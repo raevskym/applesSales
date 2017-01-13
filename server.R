@@ -3,17 +3,13 @@ library(dplyr)
 library(lubridate)
 library(BH)
 
-
-#TO DO: BENCHMARK vs regression, Q4 2016 iMac Sales?
-
-
-#data input and clear
+#Data Source: Statista https://proxy.library.upenn.edu:5546/statistics/263444/sales-of-apple-mac-computers-since-first-quarter-2006/
 iData <- read.csv("iData.csv")
 imatr <- iData
 imatr[,3] <- as.numeric(gsub(",","",imatr[,3]))
 range.ex <- function(x, fac=1.2) { xrg <- range(x);  m <- mean(xrg);  (xrg - m)*fac + m }
 
-tripsPlot <- function(startQuarter, modelType, covariates, mixture) {
+tripsPlot <- function(startQuarter, modelType, covariates, mixture, benchmark) {
         if (modelType == 1 && !mixture) {
           #Exponential Model
           eCov <- function(x) { ## function to optimize
@@ -410,11 +406,17 @@ tripsPlot <- function(startQuarter, modelType, covariates, mixture) {
   
   lines (imatr[1:43,1], imatr[1:43,3], pch=16, cex=1.2, lwd=2, col="red")
   lines (imatr[1:40,1], imatr[1:40,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
-  lines (within(data.frame(c(1:43)), ypred <- predict(lm((imatr$dP[1:43] * 150452)~c(1:43)), data.frame(c(1:43)))), col = "grey", pch=16, cex=1.2, lwd=2, lty=2)
-  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)","Linear Regression (benchmark)"),
-          lty = c(1,1,2,2), lwd = c(2,2,2,2),
-          col = c("blue","red","black","grey"))
-  
+  if (benchmark) {
+    lines (within(data.frame(c(1:43)), ypred <- predict(lm((imatr$dP[1:43] * 150452)~c(1:43)), data.frame(c(1:43)))), col = "grey", pch=16, cex=1.2, lwd=2, lty=2)
+    legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)","Linear Regression (benchmark)"),
+            lty = c(1,1,2,2), lwd = c(2,2,2,2),
+            col = c("blue","red","black","grey"))
+    }
+  else {
+    legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)"),
+            lty = c(1,1,2), lwd = c(2,2,2),
+            col = c("blue","red","black"))
+  }
   z
 }
 
@@ -431,7 +433,7 @@ description <- function(startQuarter, modelType, covariates, mixture) {
       if (modelType == 2 && length(covariates) == 2) {
         "With a Mean Average Percent Error (MAPE) of less than .13, the Weibull (with all 3 covariates) demonstrates better fit than all other probability models and traditional regression methods.
 
-Note: model is trained on t = (1:40) and tested on t = (41:44), due to disclosed 2016 sales but undisclosed 2016 ad expenditures at time of analysis (Q4 2016)"
+Note: model is trained on t = (1:40) and tested on t = (41:44), due to disclosed 2016 sales but undisclosed 2016 ad expenditures at time of analysis (Q4 2016). The model therefore assumes that ad expenditures in 2016 equal those in 2015; Apple could build the most accurate model by inputting their true 2016 ad exenditures."
       }
         else {
         "Unlike tradional regression methods (curve fitting), probability models predict sales by analyzing purchase behaviors of individual customers. Lambda measures the average customer's purchase propensity in a given period, betas measure the covariance between purchase likelihood and their given co-variable, Log Likelihood is the parameter we seek to maximize, and MAPE is a goodness-of-fit measure for comparing models."
@@ -443,8 +445,8 @@ Note: model is trained on t = (1:40) and tested on t = (41:44), due to disclosed
   
 shinyServer(
   function(input, output) {
-    output$plot <- renderPlot({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture)})
-    output$table <- renderTable({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture)}, digits = 4)
+    output$plot <- renderPlot({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture, input$benchmark)})
+    output$table <- renderTable({tripsPlot(input$startQuarter, input$modelType, input$covariates, input$mixture, input$benchmark)}, digits = 4)
     output$description <- renderText({description(input$startQuarter, input$modelType, input$covariates, input$mixture)})
     }
   )

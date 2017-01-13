@@ -412,17 +412,11 @@ tripsPlot <- function(startQuarter, modelType, covariates, mixture, benchmark, n
   lines (imatr[1:40,1], imatr[1:40,4]*5000, pch=16, cex=1.2, lwd=2, lty=2)
   segments(40, 1.8*5000, 41, num*5000, pch=16, cex=1.2, lwd=2, lty=2)
   segments(41, num*5000, 43, num*5000, pch=16, cex=1.2, lwd=2, lty=2)
-  if (benchmark) {
-    lines (within(data.frame(c(1:43)), ypred <- predict(lm((imatr$dP[1:43] * 150452)~c(1:43)), data.frame(c(1:43)))), col = "grey", pch=16, cex=1.2, lwd=2, lty=2)
-    legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)","Linear Regression (benchmark)"),
+  lines (within(data.frame(c(1:43)), ypred <- predict(lm((imatr$dP[1:43] * 150452)~poly(c(1:43),benchmark,raw=TRUE)), data.frame(c(1:43)))), col = "grey", pch=16, cex=1.2, lwd=2, lty=2)
+  legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)","Polynomial Regression (benchmark)"),
             lty = c(1,1,2,2), lwd = c(2,2,2,2),
             col = c("blue","red","black","grey"))
-    }
-  else {
-    legend (startQuarter[1], plotMax, c("Projected Sales (model)", "Actual Sales", "Ad Expenditures (covariate)"),
-            lty = c(1,1,2), lwd = c(2,2,2),
-            col = c("blue","red","black"))
-  }
+    
   z
 }
 

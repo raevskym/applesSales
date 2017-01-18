@@ -1,10 +1,10 @@
 name: applesales
-title:
+title: TeslaModelS
 account: raevsky
 server: shinyapps.io
 appId: 148408
-bundleId: 679057
+bundleId: 682796
 url: https://raevsky.shinyapps.io/applesales/
-when: 1484361671.51285
+when: 1484699174.94149
 asMultiple: FALSE
 asStatic: FALSE

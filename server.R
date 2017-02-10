@@ -349,7 +349,8 @@ description <- function(startQuarter, modelType, covariates) {
       if (modelType == 2 && length(covariates) == 2) {
         "With a Mean Average Percent Error (MAPE) of less than .13, the Weibull (with all 3 covariates) demonstrates better fit than all other probability models and traditional regression methods.
 
-Note: At time of analysis (Q4 2016), Apple disclosed Q1-Q3 2016 sales but had not disclosed 2016 ad expenditures. The model initially assumes that ad expenditures in 2016 equal those in 2015 ($1.8bn); Apple could build the most accurate model by inputting their true 2016 ad exenditures."
+Note: At time of analysis (Q4 2016), Apple disclosed Q1-Q3 2016 sales but had not disclosed 2016 ad expenditures. The model initially assumes that ad expenditures in 2016 equal those in 2015 ($1.8bn); Apple could build the most accurate model by inputting their true 2016 ad exenditures.
+          Unfortunately this analysis makes the implicit assumptiont that each iMac purchase is a novel customer; the author is working to correct this."
       }
         else {
         "Unlike tradional regression methods (curve fitting), probability models predict sales by analyzing purchase behaviors of individual customers. Lambda measures the average customer's purchase propensity in a given period, betas measure the covariance between purchase likelihood and their given co-variable, Log Likelihood is the parameter we seek to maximize, and MAPE is a goodness-of-fit measure for comparing models."
